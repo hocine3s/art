@@ -1,0 +1,160 @@
+
+{
+  "entities": {
+    "Artwork": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Artwork",
+      "type": "object",
+      "description": "Represents a student's artwork displayed in the club's dynamic art gallery.",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "imageUrl": { "type": "string", "format": "uri" },
+        "artistFullName": { "type": "string" },
+        "medium": { "type": "string" },
+        "artistProfileLink": { "type": "string", "format": "uri" },
+        "isFeatured": { "type": "boolean", "default": false },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "title", "description", "imageUrl", "artistFullName", "createdAt", "updatedAt"]
+    },
+    "Event": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Event",
+      "type": "object",
+      "description": "Represents an upcoming or past event, workshop, or exhibition organized by the art club.",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "coverImageUrl": { "type": "string", "format": "uri" },
+        "date": { "type": "string", "format": "date" },
+        "time": { "type": "string" },
+        "location": { "type": "string" },
+        "registrationCount": { "type": "number", "default": 0 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "title", "description", "coverImageUrl", "date", "time", "location", "createdAt", "updatedAt"]
+    },
+    "Member": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Member",
+      "type": "object",
+      "description": "Represents a student who has registered to join the L'Artelier Oran art club.",
+      "properties": {
+        "id": { "type": "string" },
+        "fullName": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "phoneNumber": { "type": "string" },
+        "universityDepartment": { "type": "string" },
+        "portfolioLink": { "type": "string", "format": "uri" },
+        "status": { "type": "string", "enum": ["pending", "active", "rejected"], "default": "pending" },
+        "registeredAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "fullName", "email", "phoneNumber", "universityDepartment", "registeredAt"]
+    },
+    "Product": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Product",
+      "type": "object",
+      "description": "Represents an item for sale in the club's shop.",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "imageUrl": { "type": "string", "format": "uri" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "description", "price", "imageUrl", "createdAt", "updatedAt"]
+    },
+    "Order": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Order",
+      "type": "object",
+      "description": "Represents a customer's order from the shop.",
+      "properties": {
+        "id": { "type": "string" },
+        "productId": { "type": "string" },
+        "productName": { "type": "string" },
+        "customerName": { "type": "string" },
+        "customerEmail": { "type": "string", "format": "email" },
+        "customerPhone": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "completed"], "default": "pending" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "productId", "productName", "customerName", "customerEmail", "customerPhone", "createdAt"]
+    },
+    "ClubSettings": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ClubSettings",
+      "type": "object",
+      "description": "Represents global settings and configuration for the L'Artelier Oran art club.",
+      "properties": {
+        "id": { "type": "string" },
+        "clubName": { "type": "string" },
+        "tagline": { "type": "string" },
+        "taglineAr": { "type": "string" },
+        "logoUrl": { "type": "string", "format": "uri" },
+        "heroTitle": { "type": "string" },
+        "heroTitleAr": { "type": "string" },
+        "heroDescription": { "type": "string" },
+        "heroDescriptionAr": { "type": "string" },
+        "heroImageUrl": { "type": "string", "format": "uri" },
+        "instagramLink": { "type": "string", "format": "uri" },
+        "facebookLink": { "type": "string", "format": "uri" },
+        "discordLink": { "type": "string", "format": "uri" },
+        "youtubeLink": { "type": "string", "format": "uri" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "clubName", "tagline", "updatedAt"]
+    },
+    "AdminConfig": {
+       "title": "AdminConfig",
+       "type": "object",
+       "description": "Sensitive security configuration for the site. Restricted access.",
+       "properties": {
+         "adminPassword": { "type": "string" }
+       }
+    }
+  },
+  "auth": {
+    "providers": ["anonymous", "password"]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/artworks/{artworkId}",
+        "definition": { "entityName": "Artwork", "schema": { "$ref": "#/backend/entities/Artwork" }, "description": "Gallery artworks." }
+      },
+      {
+        "path": "/events/{eventId}",
+        "definition": { "entityName": "Event", "schema": { "$ref": "#/backend/entities/Event" }, "description": "Club events." }
+      },
+      {
+        "path": "/members/{memberId}",
+        "definition": { "entityName": "Member", "schema": { "$ref": "#/backend/entities/Member" }, "description": "Member registrations." }
+      },
+      {
+        "path": "/products/{productId}",
+        "definition": { "entityName": "Product", "schema": { "$ref": "#/backend/entities/Product" }, "description": "Shop products." }
+      },
+      {
+        "path": "/orders/{orderId}",
+        "definition": { "entityName": "Order", "schema": { "$ref": "#/backend/entities/Order" }, "description": "Customer orders." }
+      },
+      {
+        "path": "/clubSettings/global",
+        "definition": { "entityName": "ClubSettings", "schema": { "$ref": "#/backend/entities/ClubSettings" }, "description": "Public club info." }
+      },
+      {
+        "path": "/adminConfig/security",
+        "definition": { "entityName": "AdminConfig", "schema": { "$ref": "#/backend/entities/AdminConfig" }, "description": "Private security settings." }
+      }
+    ]
+  }
+}
